@@ -37,40 +37,47 @@ func InitialiseCustomer() []Customer {
 		IsOpen:         true,
 	}
 	var cus = make([]Customer, 4)
-	cus[0] = cust1
-	cus[1] = cust2
-	cus[2] = cust3
+	cus = append(cus, cust1)
+	cus = append(cus, cust2)
+	cus = append(cus, cust3)
 	return cus
 }
 
-func CreateNewAccount(cus []Customer) []Customer {
+func CreateNewAccount(cus []Customer, fname string, lname string, accno int, accbal int, email string) []Customer {
 	cust4 := Customer{
-		Firstname:     "Pallavi",
-		Lastname:      "Kastala",
-		Accountnumber: 1789,
-		Email:         "pallavikastala@gmail.com",
-		IsOpen:        true,
+		Firstname:      fname,
+		Lastname:       lname,
+		Accountnumber:  accno,
+		Accountbalance: accbal,
+		Email:          email,
+		IsOpen:         true,
 	}
-	cus[3] = cust4
+	cus = append(cus, cust4)
 	return cus
-
 }
-func AddMoney(cus []Customer) int {
-	balance := cus[0].Accountbalance
-	deposit := 100
-	fmt.Printf("The amount want to deposit is %d to the AccountNumber %d\n", deposit, cus[0].Accountnumber)
-	updated_balance := balance + deposit
-	cus[0].Accountbalance = updated_balance
-	return updated_balance
+func AddMoney(cus []Customer, accno int, depomoney int) int {
+	for i := 0; i < len(cus); i++ {
+		if cus[i].Accountnumber == accno {
+			balance := cus[i].Accountbalance
+			fmt.Printf("The amount want to deposit is %d to the AccountNumber %d\n", depomoney, cus[i].Accountnumber)
+			updated_balance := balance + depomoney
+			cus[i].Accountbalance = updated_balance
+			return updated_balance
+		}
+	}
+	return -1
 }
-func WithdrawMoney(cus []Customer) int {
-	balance := cus[1].Accountbalance
-	withdraw := 50
-	fmt.Printf("The amount want to withdraw is %d from the AccountNumber %d\n", withdraw, cus[1].Accountnumber)
-	updated_balance := CheckBalance(balance, withdraw)
-	cus[1].Accountbalance = updated_balance
-	return updated_balance
-
+func WithdrawMoney(cus []Customer, accno int, withdrawmoney int) int {
+	for i := 0; i < len(cus); i++ {
+		if cus[i].Accountnumber == accno {
+			balance := cus[i].Accountbalance
+			fmt.Printf("The amount want to withdraw is %d from the AccountNumber %d\n", withdrawmoney, cus[i].Accountnumber)
+			updated_balance := CheckBalance(balance, withdrawmoney)
+			cus[i].Accountbalance = updated_balance
+			return updated_balance
+		}
+	}
+	return -1
 }
 func CheckBalance(balance int, withdraw int) int {
 	if balance > withdraw {
@@ -90,27 +97,48 @@ func GetAccountBalance(cus []Customer) {
 	}
 
 }
-func TransferMoney(cus []Customer) {
-	TransferAmount := 50
-	fmt.Printf("Transfer Money of %d rupees from Account Number %d to the Account Number %d\n", TransferAmount, cus[2].Accountnumber, cus[3].Accountnumber)
-	balance := cus[2].Accountbalance
-	updated_balance := CheckBalance(balance, TransferAmount)
-	cus[2].Accountbalance = updated_balance
-	fmt.Printf("The total balance in Account number %d after transfer of %d rupees to Account Number %d  is %d\n", cus[2].Accountnumber, TransferAmount, cus[3].Accountnumber, updated_balance)
-	bal := cus[3].Accountbalance
-	cus[3].Accountbalance = bal + TransferAmount
-	fmt.Printf("The total balance in Account number %d after transfer of %d rupees from Account Number %d is %d\n", cus[3].Accountnumber, TransferAmount, cus[2].Accountnumber, cus[3].Accountbalance)
-}
-func CloseAccount(cus []Customer) {
-	check := cus[3].IsOpen
-	if !check {
-		fmt.Println("Account is already closed")
-	} else {
-		check = false
-		cus[3].IsOpen = check
-		fmt.Printf("Account Number %d is closed Successfully \n", cus[3].Accountnumber)
+func TransferMoney(cus []Customer, Fromaccno int, Toaccno int, TransferAmount int) {
+	for i := 0; i < len(cus); i++ {
+		if cus[i].Accountnumber == Fromaccno {
+			fmt.Printf("Transfer Money of %d rupees from Account Number %d to the Account Number %d\n", TransferAmount, Fromaccno, Toaccno)
+			balance := cus[i].Accountbalance
+			updated_balance := CheckBalance(balance, TransferAmount)
+			cus[i].Accountbalance = updated_balance
+			fmt.Printf("The total balance in Account number %d after transfer of %d rupees to Account Number %d  is %d\n", Fromaccno, TransferAmount, Toaccno, updated_balance)
+		}
+		if cus[i].Accountnumber == Toaccno {
+			bal := cus[i].Accountbalance
+			cus[i].Accountbalance = bal + TransferAmount
+			fmt.Printf("The total balance in Account number %d after transfer of %d rupees from Account Number %d is %d\n", Toaccno, TransferAmount, Fromaccno, cus[i].Accountbalance)
+
+		}
+
 	}
 
+}
+func CloseAccount(cus []Customer, accno int) {
+	for i := 0; i < len(cus); i++ {
+		if cus[i].Accountnumber == accno {
+			check := cus[i].IsOpen
+			if !check {
+				fmt.Println("Account is already closed")
+			} else {
+				check = false
+				cus[i].IsOpen = check
+				fmt.Printf("Account Number %d is closed Successfully \n", cus[i].Accountnumber)
+			}
+		}
+
+	}
+
+}
+func CheckAccountNumber(customer []Customer, accno int) bool {
+	for i := 0; i < len(customer); i++ {
+		if customer[i].Accountnumber == accno {
+			return true
+		}
+	}
+	return false
 }
 
 func LoginAsCustomer(customer []Customer, accountnumber int) error {

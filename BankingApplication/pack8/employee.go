@@ -39,16 +39,16 @@ func InitialiseEmployee() []Employee {
 		Qualification: "MS",
 		Empid:         3,
 	}
-	var emp = make([]Employee, 3)
-	emp[0] = emp1
-	emp[1] = emp2
-	emp[2] = emp3
+	var emp = make([]Employee, 0)
+	emp = append(emp, emp1)
+	emp = append(emp, emp2)
+	emp = append(emp, emp3)
 	return emp
 }
 func CustomerInfo(cus []pack7.Customer) {
 	count := 0
 	inactive := 0
-	for i := 0; i < len(cus)-1; i++ {
+	for i := 0; i < len(cus); i++ {
 		fmt.Println(cus[i])
 		if cus[i].IsOpen {
 			count++
